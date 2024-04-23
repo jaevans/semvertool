@@ -1,0 +1,11 @@
+.idea
+*.sln
+*.suo
+*.db
+*.log
+*.cache
+cover.out
+vendor/
+build/
+tmp/
+*.DS_Store
