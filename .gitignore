@@ -9,3 +9,5 @@ vendor/
 build/
 tmp/
 *.DS_Store
+
+dist/
