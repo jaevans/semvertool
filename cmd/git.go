@@ -14,6 +14,8 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 )
 
+var ErrNoSemverTags = fmt.Errorf("no semver tags found")
+
 // gitCmd represents the git command
 var gitCmd = &cobra.Command{
 	Use:   "git",
@@ -63,12 +65,12 @@ func getTags(repo *goget.Repository) ([]string, error) {
 	semverTags := make([]string, 0)
 	if err := iter.ForEach(func(ref *plumbing.Reference) error {
 		shortTag := ref.Name().Short()
-		v, err := semver.NewVersion(shortTag)
+		_, err := semver.NewVersion(shortTag)
 		if err != nil {
 			fmt.Printf("Could not parse tag %s as semver: %s\n", shortTag, err)
 			return nil
 		}
-		semverTags = append(semverTags, v.String())
+		semverTags = append(semverTags, shortTag)
 		return nil
 	}); err != nil {
 		return nil, err
@@ -76,10 +78,22 @@ func getTags(repo *goget.Repository) ([]string, error) {
 	return semverTags, nil
 }
 
-func gitBump(version string, repo *goget.Repository) (*semver.Version, error) {
+func gitBump(repo *goget.Repository) (*semver.Version, error) {
 	bumpType := getBumpType()
 
-	newVersion, err := doBump(version, bumpType)
+	semverTags, err := getTags(repo)
+	if err != nil {
+		fmt.Println("Could not get tags", err)
+		return nil, err
+	}
+
+	if len(semverTags) == 0 {
+		fmt.Println("No semver tags found")
+		return nil, ErrNoSemverTags
+	}
+	latestSemverTag := semverTags[len(semverTags)-1]
+
+	newVersion, err := doBump(latestSemverTag, bumpType)
 	if err != nil {
 		fmt.Println("Could not bump version", err)
 		return nil, err
@@ -113,19 +127,7 @@ func runGit(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	semverTags, err := getTags(repo)
-	if err != nil {
-		fmt.Println("Could not get tags", err)
-		return
-	}
-
-	if len(semverTags) == 0 {
-		fmt.Println("No semver tags found")
-		return
-	}
-	latestSemverTag := semverTags[len(semverTags)-1]
-
-	newVersion, err := gitBump(latestSemverTag, repo)
+	newVersion, err := gitBump(repo)
 	if err != nil {
 		fmt.Println("Could not bump version", err)
 		return

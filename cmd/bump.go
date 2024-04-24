@@ -44,22 +44,6 @@ var bumpCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(bumpCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// bumpCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// bumpCmd.Flags().Bool("major", false, "Bump the major version")
-	// bumpCmd.Flags().Bool("minor", false, "Bump the minor version")
-	// bumpCmd.Flags().Bool("patch", false, "Bump the patch version")
-	// bumpCmd.Flags().Bool("prerelease", false, "Bump the prerelease version")
-	// bumpCmd.Flags().String("build", "", "Append the given string to the version as build information.")
-	// bumpCmd.Flags().String("from-message", "", "Extract the bump type from a commit message")
-	// bumpCmd.MarkFlagsMutuallyExclusive("major", "minor", "patch", "prerelease", "from-message")
-
 	addCommonBumpFlags(bumpCmd)
 	bumpCmd.Flags().String("metadata", "", "Append the given string to the version as metadata.")
 
@@ -84,8 +68,6 @@ func runBump(cmd *cobra.Command, args []string) {
 		fmt.Println("Error bumping version:", err)
 		return
 	}
-	// if viper.GetString("metadata") != "" {
-	// 	newV = fmt.Sprintf("%s+%s", newV, viper.GetString("metadata"))
-	// }
+
 	fmt.Println(newV)
 }
