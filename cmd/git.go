@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/Masterminds/semver"
 	"github.com/spf13/cobra"
@@ -56,26 +57,39 @@ func init() {
 	viper.BindPFlags(gitCmd.Flags())
 }
 
-func getTags(repo *goget.Repository) ([]string, error) {
+func getTags(repo *goget.Repository) ([]*semver.Version, error) {
 	iter, err := repo.Tags()
 	if err != nil {
 		return nil, err
 	}
 	defer iter.Close()
-	semverTags := make([]string, 0)
+	semverTags := make([]*semver.Version, 0)
 	if err := iter.ForEach(func(ref *plumbing.Reference) error {
 		shortTag := ref.Name().Short()
-		_, err := semver.NewVersion(shortTag)
+		t, err := semver.NewVersion(shortTag)
 		if err != nil {
 			fmt.Printf("Could not parse tag %s as semver: %s\n", shortTag, err)
 			return nil
 		}
-		semverTags = append(semverTags, shortTag)
+		semverTags = append(semverTags, t)
 		return nil
 	}); err != nil {
 		return nil, err
 	}
+	sort.Sort(semver.Collection(semverTags))
 	return semverTags, nil
+}
+
+func getTagsStrings(repo *goget.Repository) ([]string, error) {
+	tags, err := getTags(repo)
+	if err != nil {
+		return []string{}, err
+	}
+	tagStrings := make([]string, len(tags))
+	for i, t := range tags {
+		tagStrings[i] = t.Original()
+	}
+	return tagStrings, nil
 }
 
 func gitBump(repo *goget.Repository) (*semver.Version, error) {
@@ -93,7 +107,7 @@ func gitBump(repo *goget.Repository) (*semver.Version, error) {
 	}
 	latestSemverTag := semverTags[len(semverTags)-1]
 
-	newVersion, err := doBump(latestSemverTag, bumpType)
+	newVersion, err := doBump(latestSemverTag.Original(), bumpType)
 	if err != nil {
 		fmt.Println("Could not bump version", err)
 		return nil, err
@@ -102,10 +116,10 @@ func gitBump(repo *goget.Repository) (*semver.Version, error) {
 
 		hash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
 		if err != nil {
-			fmt.Println("Could not get hash", err)
+			fmt.Println("Could not get revision hash of HEAD", err)
 			return nil, err
 		}
-		newV, err := newVersion.SetMetadata("sha." + hash.String()[:7])
+		newV, err := newVersion.SetMetadata(hash.String()[:7])
 		if err != nil {
 			fmt.Println("Could not add hash metadata", err)
 			return nil, err
