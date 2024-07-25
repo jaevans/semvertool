@@ -71,8 +71,13 @@ func TestValidVersionAndRepostory(t *testing.T) {
 
 	expected := []string{"v1.0.0", "1.0.1"}
 	result, err := getTags(repo)
+	resultStrings := make([]string, len(result))
+	for i, r := range result {
+		resultStrings[i] = r.Original()
+	}
+
 	assert.NoError(t, err)
-	assert.Equal(t, expected, result)
+	assert.Equal(t, expected, resultStrings)
 }
 
 func TestNoTags(t *testing.T) {
@@ -81,8 +86,12 @@ func TestNoTags(t *testing.T) {
 
 	expected := []string{}
 	result, err := getTags(repo)
+	resultStrings := make([]string, len(result))
+	for i, r := range result {
+		resultStrings[i] = r.Original()
+	}
 	assert.NoError(t, err)
-	assert.Equal(t, expected, result)
+	assert.Equal(t, expected, resultStrings)
 }
 
 func TestInvalidVersionAndRepository(t *testing.T) {
@@ -103,9 +112,14 @@ func TestInvalidVersionAndRepository(t *testing.T) {
 
 	expected := []string{"v1.0.0"}
 	result, err := getTags(repo)
+	resultStrings := make([]string, len(result))
+	for i, r := range result {
+		resultStrings[i] = r.Original()
+	}
+
 	assert.NoError(t, err)
 	fmt.Println(result)
-	assert.Equal(t, expected, result)
+	assert.Equal(t, expected, resultStrings)
 }
 
 func TestGitBump_NoTags(t *testing.T) {
@@ -169,7 +183,7 @@ func TestGitBump_WithHash(t *testing.T) {
 
 	viper.Set("hash", true)
 	result, err := gitBump(repo)
-	expected := "v1.0.1+sha." + shortHash
+	expected := "v1.0.1+" + shortHash
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result.Original())
 }
