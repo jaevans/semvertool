@@ -183,7 +183,26 @@ func TestGitBump_WithHash(t *testing.T) {
 
 	viper.Set("hash", true)
 	result, err := gitBump(repo)
+	viper.Reset()
 	expected := "v1.0.1+" + shortHash
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result.Original())
+}
+
+func TestGitBump_WithPrereleasePrefix(t *testing.T) {
+	repo, err := setupRepo()
+	assert.NoError(t, err)
+
+	commit, err := commitFile("file1.txt", repo)
+	assert.NoError(t, err)
+
+	_, err = repo.CreateTag("v1.0.0", commit, nil)
+	assert.NoError(t, err)
+
+	viper.Set("prerelease", true)
+	viper.Set("prerelease-prefix", "alpha")
+	result, err := gitBump(repo)
+	expected := "v1.0.1-alpha.1"
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result.Original())
 }
