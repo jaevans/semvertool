@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver"
-	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -19,8 +19,8 @@ const (
 	MinorBump      BumpType = "minor"
 	PatchBump      BumpType = "patch"
 	PrereleaseBump BumpType = "prerelease"
-	UnknownBump    BumpType = ""
-	NoBump         BumpType = ""
+	UnknownBump    BumpType = "unknown"
+	NoBump         BumpType = "none"
 )
 
 func extractBumpTypeFromMessage(s string) BumpType {
@@ -67,9 +67,9 @@ func getBumpType() BumpType {
 		messageBump := extractBumpTypeFromMessage(fromMessage)
 		if messageBump == UnknownBump || messageBump == NoBump {
 			fmt.Println("No valid bump type found in the commit message")
-		} else {
-			return messageBump
 		}
+		return messageBump
+
 	}
 	if viper.GetBool("major") {
 		return MajorBump
@@ -105,10 +105,9 @@ func doBump(version string, bumpWhat BumpType) (*semver.Version, error) {
 	case PrereleaseBump:
 		prerelease := v.Prerelease()
 		if len(prerelease) == 0 {
-			fmt.Println("No prerelease found, bumping patch version")
 			vNew := v.IncPatch()
-			v = &vNew
-			return v, nil
+			vNew, err := vNew.SetPrerelease(viper.GetString("prerelease-prefix") + ".1")
+			return &vNew, err
 		}
 		prefix, number, err := extractTrailingDigits(prerelease)
 		if err == ErrNoTrailingDigits && !strings.Contains(prefix, ".") {
@@ -134,12 +133,13 @@ func doBump(version string, bumpWhat BumpType) (*semver.Version, error) {
 	return v, nil
 }
 
-func addCommonBumpFlags(cmd *cobra.Command) {
-	cmd.Flags().Bool("major", false, "Bump the major version")
-	cmd.Flags().Bool("minor", false, "Bump the minor version")
-	cmd.Flags().Bool("patch", false, "Bump the patch version")
-	cmd.Flags().Bool("prerelease", false, "Bump the prerelease version")
-	cmd.Flags().StringP("from-message", "m", "", "Extract the bump type from a commit message")
-	cmd.MarkFlagsMutuallyExclusive("major", "minor", "patch", "prerelease", "from-message")
-	viper.BindPFlags(cmd.Flags())
+func getCommonBumpFlags() *pflag.FlagSet {
+	commonFlags := pflag.NewFlagSet("common", pflag.ExitOnError)
+	commonFlags.Bool("major", false, "Bump the major version")
+	commonFlags.Bool("minor", false, "Bump the minor version")
+	commonFlags.Bool("patch", false, "Bump the patch version")
+	commonFlags.Bool("prerelease", false, "Bump the prerelease version")
+	commonFlags.StringP("from-message", "m", "", "Extract the bump type from a commit message")
+	commonFlags.StringP("prerelease-prefix", "p", "prerelease", "Set the prefix for the prerelease version if there is no existing prefix.")
+	return commonFlags
 }

@@ -66,7 +66,7 @@ func TestExtractBumpType_ValidCaseInsensitive(t *testing.T) {
 // Returns an empty string when given an empty string.
 func TestExtractBumpType_EmptyString(t *testing.T) {
 	commitMessage := ""
-	expected := UnknownBump
+	expected := NoBump
 
 	result := extractBumpTypeFromMessage(commitMessage)
 
@@ -78,7 +78,18 @@ func TestExtractBumpType_EmptyString(t *testing.T) {
 // Returns an empty string when given a commit message that does not contain a bump tag.
 func TestExtractBumpType_NoBumpTag(t *testing.T) {
 	commitMessage := "Fix bug"
-	expected := UnknownBump
+	expected := NoBump
+
+	result := extractBumpTypeFromMessage(commitMessage)
+
+	if result != expected {
+		t.Errorf("Expected '%s', but got '%s'", expected, result)
+	}
+}
+
+func TestExtractBumpType_BumpNoType(t *testing.T) {
+	commitMessage := "Fix bug [bump ]"
+	expected := NoBump
 
 	result := extractBumpTypeFromMessage(commitMessage)
 
@@ -90,7 +101,7 @@ func TestExtractBumpType_NoBumpTag(t *testing.T) {
 // Returns an empty string when given a commit message containing a bump tag with an invalid bump type.
 func TestExtractBumpType_InvalidBumpType(t *testing.T) {
 	commitMessage := "[bump invalid]"
-	expected := UnknownBump
+	expected := NoBump
 
 	result := extractBumpTypeFromMessage(commitMessage)
 
@@ -126,7 +137,7 @@ func TestExtractBumpType_ValidBumpTypeWithWhitespace(t *testing.T) {
 // Returns an empty string when given a commit message containing a bump tag with a valid bump type but with additional non-whitespace characters.
 func TestExtractBumpType_InvalidBumpTypeWithAdditionalCharactersAfter(t *testing.T) {
 	commitMessage := "[bump majorabc]"
-	expected := UnknownBump
+	expected := NoBump
 
 	result := extractBumpTypeFromMessage(commitMessage)
 
@@ -138,7 +149,7 @@ func TestExtractBumpType_InvalidBumpTypeWithAdditionalCharactersAfter(t *testing
 // Returns an empty string when given a commit message containing a bump tag with a valid bump type but with additional characters before the tag.
 func TestExtractBumpType_InvalidBumpTypeWithAdditionalCharactersBefore(t *testing.T) {
 	commitMessage := "Some additional characters [bump asdf major]"
-	expected := UnknownBump
+	expected := NoBump
 
 	result := extractBumpTypeFromMessage(commitMessage)
 
@@ -248,6 +259,22 @@ func TestGetBUmpType_FromEmptyMessage(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
+func TestGetBUmpType_FromEmptyBumpMessage(t *testing.T) {
+	viper.Reset()
+	viper.Set("from-message", "[bump]")
+	expected := NoBump
+	result := getBumpType()
+	assert.Equal(t, expected, result)
+}
+
+func TestGetBUmpType_FromInvalidBumpMessage(t *testing.T) {
+	viper.Reset()
+	viper.Set("from-message", "[bump invalid]")
+	expected := NoBump
+	result := getBumpType()
+	assert.Equal(t, expected, result)
+}
+
 // **********************
 // doBump
 // **********************
@@ -289,9 +316,11 @@ func TestDoBump_ValidVersionPrereleaseBump(t *testing.T) {
 }
 
 func TestDoBump_ValidVersionPrereleaseBumpNoPrerelease(t *testing.T) {
+	viper.Reset()
+	viper.Set("prerelease-prefix", "alpha")
 	version := "1.2.3"
 	bumpType := PrereleaseBump
-	expected := "1.2.4"
+	expected := "1.2.4-alpha.1"
 	result, err := doBump(version, bumpType)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result.String())
@@ -335,6 +364,43 @@ func TestDoBump_PrereleaseClearsBuild(t *testing.T) {
 	version := "1.2.3-alpha.0+build"
 	bumpType := PrereleaseBump
 	expected := "1.2.3-alpha.1"
+	result, err := doBump(version, bumpType)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result.String())
+}
+func TestDoBump_PatchClearsPrerelease(t *testing.T) {
+	viper.Reset()
+	version := "1.2.3-alpha.0"
+	bumpType := PatchBump
+	expected := "1.2.3"
+	result, err := doBump(version, bumpType)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result.String())
+}
+func TestDoBump_MinorClearsPrerelease(t *testing.T) {
+	version := "1.2.3-alpha.0"
+	bumpType := MinorBump
+	expected := "1.3.0"
+	result, err := doBump(version, bumpType)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result.String())
+}
+
+func TestDoBump_MajorClearsPrerelease(t *testing.T) {
+	version := "1.2.3-alpha.0"
+	bumpType := MajorBump
+	expected := "2.0.0"
+	result, err := doBump(version, bumpType)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result.String())
+}
+
+func TestDoBump_AddsCorrectPrereleasePrefix(t *testing.T) {
+	viper.Reset()
+	viper.Set("prerelease-prefix", "snapshot")
+	version := "1.2.3"
+	bumpType := PrereleaseBump
+	expected := "1.2.4-snapshot.1"
 	result, err := doBump(version, bumpType)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result.String())
