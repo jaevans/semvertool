@@ -29,6 +29,15 @@ import (
 func setupRepo() (*git.Repository, error) {
 	fs := memfs.New()
 	repo, err := git.Init(memory.NewStorage(), fs)
+	if err != nil {
+		return nil, err
+	}
+	cfg, err := repo.Config()
+	if err != nil {
+		return nil, err
+	}
+	cfg.Author.Name = "Test Author"
+	cfg.Author.Email = "test_email@example.com"
 
 	return repo, err
 }
