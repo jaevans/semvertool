@@ -78,3 +78,19 @@ git tag v1.0.0-alpha.2+3f6d1270
 semvertool git --minor
 v1.1.0
 ```
+
+### compare
+
+Compare two semver versions and return an exit code based on their comparison.
+
+```shell
+Examples:
+semvertool compare 1.0.0 2.0.0
+2
+
+semvertool compare 2.0.0 2.0.0
+1
+
+semvertool compare 2.0.0 1.0.0
+0
+```
