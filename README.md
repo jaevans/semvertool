@@ -78,3 +78,26 @@ git tag v1.0.0-alpha.2+3f6d1270
 semvertool git --minor
 v1.1.0
 ```
+
+### sort
+
+Sort a list of semver strings in ascending or descending order.
+
+```shell
+semvertool sort 1.0.0 2.0.0 0.1.0
+0.1.0 1.0.0 2.0.0
+
+semvertool sort --descending 1.0.0 2.0.0 0.1.0
+2.0.0 1.0.0 0.1.0
+
+semvertool sort --separator "," 1.0.0 2.0.0 0.1.0
+0.1.0,1.0.0,2.0.0
+
+semvertool sort --separator "\n" 1.0.0 2.0.0 0.1.0
+0.1.0
+1.0.0
+2.0.0
+
+semvertool sort 1.0.0-alpha.1 1.0.0 1.0.0-beta.1
+1.0.0-alpha.1 1.0.0-beta.1 1.0.0
+```

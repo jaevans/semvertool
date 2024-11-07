@@ -9,6 +9,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var sortCmd = &cobra.Command{
+	Use:   "sort",
+	Short: "Sort a list of semver strings",
+	Long: `Sort a list of semver strings in ascending or descending order.
+
+Examples:
+semvertool sort 1.0.0 2.0.0 0.1.0
+0.1.0 1.0.0 2.0.0
+
+semvertool sort --descending 1.0.0 2.0.0 0.1.0
+2.0.0 1.0.0 0.1.0
+
+semvertool sort --separator "," 1.0.0 2.0.0 0.1.0
+0.1.0,1.0.0,2.0.0
+`,
+	Run: runSort,
+}
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "semvertool",
@@ -38,4 +56,5 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
+	rootCmd.AddCommand(sortCmd)
 }
