@@ -4,10 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
+	goget "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -142,4 +145,58 @@ func getCommonBumpFlags() *pflag.FlagSet {
 	commonFlags.StringP("from-message", "m", "", "Extract the bump type from a commit message")
 	commonFlags.StringP("prerelease-prefix", "p", "prerelease", "Set the prefix for the prerelease version if there is no existing prefix.")
 	return commonFlags
+}
+
+func getTags(repo *goget.Repository) ([]*semver.Version, error) {
+	iter, err := repo.Tags()
+	if err != nil {
+		return nil, err
+	}
+	defer iter.Close()
+	semverTags := make([]*semver.Version, 0)
+	if err := iter.ForEach(func(ref *plumbing.Reference) error {
+		shortTag := ref.Name().Short()
+		t, err := semver.NewVersion(shortTag)
+		if err != nil {
+			fmt.Printf("Could not parse tag %s as semver: %s\n", shortTag, err)
+			return nil
+		}
+		semverTags = append(semverTags, t)
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	sort.Sort(semver.Collection(semverTags))
+	return semverTags, nil
+}
+
+func getTagsStrings(repo *goget.Repository) ([]string, error) {
+	tags, err := getTags(repo)
+	if err != nil {
+		return []string{}, err
+	}
+	tagStrings := make([]string, len(tags))
+	for i, t := range tags {
+		tagStrings[i] = t.Original()
+	}
+	return tagStrings, nil
+}
+
+func FilterPrerelease(versions []*semver.Version) []*semver.Version {
+	// Filter out prerelease versions
+	filtered := []*semver.Version{}
+	for _, v := range versions {
+		if len(v.Prerelease()) == 0 {
+			filtered = append(filtered, v)
+		}
+	}
+	return filtered
+}
+
+func VersionsToStrings(versions []*semver.Version) []string {
+	result := make([]string, len(versions))
+	for i, v := range versions {
+		result[i] = v.Original()
+	}
+	return result
 }

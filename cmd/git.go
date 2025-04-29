@@ -5,9 +5,8 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -66,41 +65,6 @@ func init() {
 	gitCmd.Flags().BoolP("from-commit", "c", false, "Extract the bump type from a commit message")
 	gitCmd.MarkFlagsMutuallyExclusive("major", "minor", "patch", "prerelease", "from-message", "from-commit")
 
-}
-
-func getTags(repo *goget.Repository) ([]*semver.Version, error) {
-	iter, err := repo.Tags()
-	if err != nil {
-		return nil, err
-	}
-	defer iter.Close()
-	semverTags := make([]*semver.Version, 0)
-	if err := iter.ForEach(func(ref *plumbing.Reference) error {
-		shortTag := ref.Name().Short()
-		t, err := semver.NewVersion(shortTag)
-		if err != nil {
-			fmt.Printf("Could not parse tag %s as semver: %s\n", shortTag, err)
-			return nil
-		}
-		semverTags = append(semverTags, t)
-		return nil
-	}); err != nil {
-		return nil, err
-	}
-	sort.Sort(semver.Collection(semverTags))
-	return semverTags, nil
-}
-
-func getTagsStrings(repo *goget.Repository) ([]string, error) {
-	tags, err := getTags(repo)
-	if err != nil {
-		return []string{}, err
-	}
-	tagStrings := make([]string, len(tags))
-	for i, t := range tags {
-		tagStrings[i] = t.Original()
-	}
-	return tagStrings, nil
 }
 
 func gitBump(repo *goget.Repository) (*semver.Version, error) {

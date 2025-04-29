@@ -3,6 +3,7 @@ package cmd
 import (
 	"testing"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
@@ -404,4 +405,65 @@ func TestDoBump_AddsCorrectPrereleasePrefix(t *testing.T) {
 	result, err := doBump(version, bumpType)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result.String())
+}
+
+func Test_FilterPrereleases_NoPrerelease(t *testing.T) {
+	entries := []*semver.Version{
+		semver.MustParse("1.0.0"),
+		semver.MustParse("1.0.1"),
+	}
+	expected := []*semver.Version{
+		semver.MustParse("1.0.0"),
+		semver.MustParse("1.0.1"),
+	}
+
+	result := FilterPrerelease(entries)
+	assert.Equal(t, expected, result)
+}
+
+func Test_FilterPrereleases_WithPrerelease(t *testing.T) {
+	entries := []*semver.Version{
+		semver.MustParse("1.0.0"),
+		semver.MustParse("1.0.1-alpha"),
+		semver.MustParse("1.0.2-beta"),
+	}
+	expected := []*semver.Version{
+		semver.MustParse("1.0.0"),
+	}
+
+	result := FilterPrerelease(entries)
+	assert.Equal(t, expected, result)
+}
+
+func Test_FilterPrereleases_Empty(t *testing.T) {
+	entries := []*semver.Version{}
+	expected := []*semver.Version{}
+
+	result := FilterPrerelease(entries)
+	assert.Equal(t, expected, result)
+}
+
+func Test_FilterPrereleases_AllPrerelease(t *testing.T) {
+	entries := []*semver.Version{
+		semver.MustParse("1.0.0-alpha"),
+		semver.MustParse("1.0.1-beta"),
+	}
+	expected := []*semver.Version{}
+
+	result := FilterPrerelease(entries)
+	assert.Equal(t, expected, result)
+}
+
+func Test_VersionsToStrings(t *testing.T) {
+	entries := []*semver.Version{
+		semver.MustParse("1.0.0"),
+		semver.MustParse("1.0.1"),
+	}
+	expected := []string{
+		"1.0.0",
+		"1.0.1",
+	}
+
+	result := VersionsToStrings(entries)
+	assert.Equal(t, expected, result)
 }

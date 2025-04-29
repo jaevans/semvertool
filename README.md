@@ -1,5 +1,7 @@
 # semvertool
 
+`semvertool` is a CLI tool to manage semantic versioning (semver) strings. It provides commands to bump major, minor, patch, and prerelease versions, as well as additional utilities for working with semver strings.
+
 ## Description
 
 A small toolkit for managing semantic versioning in your projects.
@@ -77,4 +79,30 @@ v1.0.0-alpha.2+3f6d1270
 git tag v1.0.0-alpha.2+3f6d1270
 semvertool git --minor
 v1.1.0
+```
+
+### `sort`
+
+Sorts a list of semver strings in ascending order. This is useful for organizing version lists or ensuring proper version ordering.
+
+### Usage
+
+```bash
+semvertool sort <version1> <version2> <version3> ...
+```
+
+Example:
+
+```bash
+semvertool sort 1.0.0 2.0.0 0.9.0
+0.9.0 1.0.0 2.0.0
+
+semvertool sort --order descending 1.0.0 2.0.0 0.9.0
+2.0.0 1.0.0 0.9.0
+
+semvertool sort  1.0.0 1.0.0-alpha.1 1.0.0-alpha.2
+1.0.0-alpha.1 1.0.0-alpha.2 1.0.0
+
+semvertool sort --no-prerelease 1.0.0 1.0.1-alpha.1 2.0.0 1.0.1 1.0.1-beta.1
+1.0.0 1.0.1 2.0.0
 ```
