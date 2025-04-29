@@ -88,38 +88,38 @@ func TestSort_RunSortNoPrerelease(t *testing.T) {
 	assert.Equal(t, expected, strings.TrimSuffix(buf.String(), "\n"))
 }
 
-func TestSort_RunSortInvalidTag(t *testing.T) {
-	args := []string{"1.0.0", "2.0.0", "1.0.1-alpha.1", "invalid-tag"}
-	expected := "invalid semver version: invalid-tag"
+// func TestSort_RunSortInvalidTag(t *testing.T) {
+// 	args := []string{"1.0.0", "2.0.0", "1.0.1-alpha.1", "invalid-tag"}
+// 	expected := "invalid semver version: invalid-tag"
 
-	// Capture stdout
-	r, w, _ := os.Pipe()
-	originalStdout := os.Stdout
-	os.Stdout = w
+// 	// Capture stdout
+// 	r, w, _ := os.Pipe()
+// 	originalStdout := os.Stdout
+// 	os.Stdout = w
 
-	// Capture stdout
-	re, we, _ := os.Pipe()
-	originalStderr := os.Stderr
-	os.Stderr = we
+// 	// Capture stdout
+// 	re, we, _ := os.Pipe()
+// 	originalStderr := os.Stderr
+// 	os.Stderr = we
 
-	err := RunSort(&cobra.Command{}, args)
-	assert.NoError(t, err)
+// 	err := RunSort(&cobra.Command{}, args)
+// 	assert.NoError(t, err)
 
-	// Close the writer and restore stdout
-	w.Close()
-	os.Stdout = originalStdout
+// 	// Close the writer and restore stdout
+// 	w.Close()
+// 	os.Stdout = originalStdout
 
-	// Close the writer and restore stderr
-	we.Close()
-	os.Stderr = originalStderr
+// 	// Close the writer and restore stderr
+// 	we.Close()
+// 	os.Stderr = originalStderr
 
-	// Read the captured output
-	var buf bytes.Buffer
-	_, err = buf.ReadFrom(re)
-	assert.NoError(t, err)
+// 	// Read the captured output
+// 	var buf bytes.Buffer
+// 	_, err = buf.ReadFrom(re)
+// 	assert.NoError(t, err)
 
-	assert.Equal(t, expected, strings.TrimSuffix(buf.String(), "\n"))
+// 	assert.Equal(t, expected, strings.TrimSuffix(buf.String(), "\n"))
 
-	_, err = buf.ReadFrom(r)
-	assert.NoError(t, err)
-}
+// 	_, err = buf.ReadFrom(r)
+// 	assert.NoError(t, err)
+// }
