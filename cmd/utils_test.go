@@ -9,7 +9,7 @@ import (
 )
 
 // Returns the correct bump type when given a commit message containing a bump tag with a valid bump type.
-func TestExtractBumpType_ValidBumpType(t *testing.T) {
+func TestExtractBumpTypeValidBumpType(t *testing.T) {
 	commitMessage := "[bump major]"
 	expected := MajorBump
 
@@ -20,7 +20,7 @@ func TestExtractBumpType_ValidBumpType(t *testing.T) {
 	}
 }
 
-func TestExtractBumpType_ValidMinorBumpType(t *testing.T) {
+func TestExtractBumpTypeValidMinorBumpType(t *testing.T) {
 	commitMessage := "[bump minor]"
 	expected := MinorBump
 
@@ -31,7 +31,7 @@ func TestExtractBumpType_ValidMinorBumpType(t *testing.T) {
 	}
 }
 
-func TestExtractBumpType_ValidPatchBumpType(t *testing.T) {
+func TestExtractBumpTypeValidPatchBumpType(t *testing.T) {
 	commitMessage := "[bump patch]"
 	expected := PatchBump
 
@@ -42,7 +42,7 @@ func TestExtractBumpType_ValidPatchBumpType(t *testing.T) {
 	}
 }
 
-func TestExtractBumpType_ValidPrereleaseBumpType(t *testing.T) {
+func TestExtractBumpTypeValidPrereleaseBumpType(t *testing.T) {
 	commitMessage := "[bump prerelease]"
 	expected := PrereleaseBump
 
@@ -53,7 +53,7 @@ func TestExtractBumpType_ValidPrereleaseBumpType(t *testing.T) {
 	}
 }
 
-func TestExtractBumpType_ValidCaseInsensitive(t *testing.T) {
+func TestExtractBumpTypeValidCaseInsensitive(t *testing.T) {
 	commitMessage := "[bUmP preREleasE]"
 	expected := PrereleaseBump
 
@@ -65,7 +65,7 @@ func TestExtractBumpType_ValidCaseInsensitive(t *testing.T) {
 }
 
 // Returns an empty string when given an empty string.
-func TestExtractBumpType_EmptyString(t *testing.T) {
+func TestExtractBumpTypeEmptyString(t *testing.T) {
 	commitMessage := ""
 	expected := NoBump
 
@@ -77,7 +77,7 @@ func TestExtractBumpType_EmptyString(t *testing.T) {
 }
 
 // Returns an empty string when given a commit message that does not contain a bump tag.
-func TestExtractBumpType_NoBumpTag(t *testing.T) {
+func TestExtractBumpTypeNoBumpTag(t *testing.T) {
 	commitMessage := "Fix bug"
 	expected := NoBump
 
@@ -88,7 +88,7 @@ func TestExtractBumpType_NoBumpTag(t *testing.T) {
 	}
 }
 
-func TestExtractBumpType_BumpNoType(t *testing.T) {
+func TestExtractBumpTypeBumpNoType(t *testing.T) {
 	commitMessage := "Fix bug [bump ]"
 	expected := NoBump
 
@@ -100,7 +100,7 @@ func TestExtractBumpType_BumpNoType(t *testing.T) {
 }
 
 // Returns an empty string when given a commit message containing a bump tag with an invalid bump type.
-func TestExtractBumpType_InvalidBumpType(t *testing.T) {
+func TestExtractBumpTypeInvalidBumpType(t *testing.T) {
 	commitMessage := "[bump invalid]"
 	expected := NoBump
 
@@ -112,7 +112,7 @@ func TestExtractBumpType_InvalidBumpType(t *testing.T) {
 }
 
 // Returns the correct bump type when given a commit message containing multiple bump tags with valid bump types.
-func TestExtractBumpType_MultipleValidBumpTypes(t *testing.T) {
+func TestExtractBumpTypeMultipleValidBumpTypes(t *testing.T) {
 	commitMessage := "[bump major] [bump minor] [bump patch]"
 	expected := MajorBump
 
@@ -124,7 +124,7 @@ func TestExtractBumpType_MultipleValidBumpTypes(t *testing.T) {
 }
 
 // Returns the correct bump type when given a commit message containing a bump tag with a valid bump type but with additional whitespace.
-func TestExtractBumpType_ValidBumpTypeWithWhitespace(t *testing.T) {
+func TestExtractBumpTypeValidBumpTypeWithWhitespace(t *testing.T) {
 	commitMessage := "[bump   minor   ]"
 	expected := MinorBump
 
@@ -136,7 +136,7 @@ func TestExtractBumpType_ValidBumpTypeWithWhitespace(t *testing.T) {
 }
 
 // Returns an empty string when given a commit message containing a bump tag with a valid bump type but with additional non-whitespace characters.
-func TestExtractBumpType_InvalidBumpTypeWithAdditionalCharactersAfter(t *testing.T) {
+func TestExtractBumpTypeInvalidBumpTypeWithAdditionalCharactersAfter(t *testing.T) {
 	commitMessage := "[bump majorabc]"
 	expected := NoBump
 
@@ -148,7 +148,7 @@ func TestExtractBumpType_InvalidBumpTypeWithAdditionalCharactersAfter(t *testing
 }
 
 // Returns an empty string when given a commit message containing a bump tag with a valid bump type but with additional characters before the tag.
-func TestExtractBumpType_InvalidBumpTypeWithAdditionalCharactersBefore(t *testing.T) {
+func TestExtractBumpTypeInvalidBumpTypeWithAdditionalCharactersBefore(t *testing.T) {
 	commitMessage := "Some additional characters [bump asdf major]"
 	expected := NoBump
 
@@ -205,7 +205,7 @@ func TestExtractTrailingDigitsWithDotDigit(t *testing.T) {
 // getBumpType
 // **********************
 
-func TestGetBumpType_MajorBump(t *testing.T) {
+func TestGetBumpTypeMajorBump(t *testing.T) {
 	viper.Reset()
 	viper.Set("major", true)
 	expected := MajorBump
@@ -213,7 +213,7 @@ func TestGetBumpType_MajorBump(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func TestGetBumpType_MinorBump(t *testing.T) {
+func TestGetBumpTypeMinorBump(t *testing.T) {
 	viper.Reset()
 	viper.Set("minor", true)
 	expected := MinorBump
@@ -221,7 +221,7 @@ func TestGetBumpType_MinorBump(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func TestGetBumpType_PatchBump(t *testing.T) {
+func TestGetBumpTypePatchBump(t *testing.T) {
 	viper.Reset()
 	viper.Set("patch", true)
 	expected := PatchBump
@@ -229,7 +229,7 @@ func TestGetBumpType_PatchBump(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func TestGetBumpType_PrereleaseBump(t *testing.T) {
+func TestGetBumpTypePrereleaseBump(t *testing.T) {
 	viper.Reset()
 	viper.Set("prerelease", true)
 	expected := PrereleaseBump
@@ -237,14 +237,14 @@ func TestGetBumpType_PrereleaseBump(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func TestGetBumpType_NothingSet(t *testing.T) {
+func TestGetBumpTypeNothingSet(t *testing.T) {
 	viper.Reset()
 	expected := PatchBump
 	result := getBumpType()
 	assert.Equal(t, expected, result)
 }
 
-func TestGetBUmpType_FromMessage(t *testing.T) {
+func TestGetBUmpTypeFromMessage(t *testing.T) {
 	viper.Reset()
 	viper.Set("from-message", "[bump major]")
 	expected := MajorBump
@@ -252,7 +252,7 @@ func TestGetBUmpType_FromMessage(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func TestGetBUmpType_FromEmptyMessage(t *testing.T) {
+func TestGetBUmpTypeFromEmptyMessage(t *testing.T) {
 	viper.Reset()
 	viper.Set("from-message", "")
 	expected := PatchBump
@@ -260,7 +260,7 @@ func TestGetBUmpType_FromEmptyMessage(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func TestGetBUmpType_FromEmptyBumpMessage(t *testing.T) {
+func TestGetBUmpTypeFromEmptyBumpMessage(t *testing.T) {
 	viper.Reset()
 	viper.Set("from-message", "[bump]")
 	expected := NoBump
@@ -268,7 +268,7 @@ func TestGetBUmpType_FromEmptyBumpMessage(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func TestGetBUmpType_FromInvalidBumpMessage(t *testing.T) {
+func TestGetBUmpTypeFromInvalidBumpMessage(t *testing.T) {
 	viper.Reset()
 	viper.Set("from-message", "[bump invalid]")
 	expected := NoBump
@@ -280,7 +280,7 @@ func TestGetBUmpType_FromInvalidBumpMessage(t *testing.T) {
 // doBump
 // **********************
 
-func TestDoBump_ValidVersion(t *testing.T) {
+func TestDoBumpValidVersion(t *testing.T) {
 	version := "1.2.3"
 	bumpType := MajorBump
 	expected := "2.0.0"
@@ -289,7 +289,7 @@ func TestDoBump_ValidVersion(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_ValidVersionMinorBump(t *testing.T) {
+func TestDoBumpValidVersionMinorBump(t *testing.T) {
 	version := "1.2.3"
 	bumpType := MinorBump
 	expected := "1.3.0"
@@ -298,7 +298,7 @@ func TestDoBump_ValidVersionMinorBump(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_ValidVersionPatchBump(t *testing.T) {
+func TestDoBumpValidVersionPatchBump(t *testing.T) {
 	version := "1.2.3"
 	bumpType := PatchBump
 	expected := "1.2.4"
@@ -307,7 +307,7 @@ func TestDoBump_ValidVersionPatchBump(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_ValidVersionPrereleaseBump(t *testing.T) {
+func TestDoBumpValidVersionPrereleaseBump(t *testing.T) {
 	version := "1.2.3-alpha.1"
 	bumpType := PrereleaseBump
 	expected := "1.2.3-alpha.2"
@@ -316,7 +316,7 @@ func TestDoBump_ValidVersionPrereleaseBump(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_ValidVersionPrereleaseBumpNoPrerelease(t *testing.T) {
+func TestDoBumpValidVersionPrereleaseBumpNoPrerelease(t *testing.T) {
 	viper.Reset()
 	viper.Set("prerelease-prefix", "alpha")
 	version := "1.2.3"
@@ -327,7 +327,7 @@ func TestDoBump_ValidVersionPrereleaseBumpNoPrerelease(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_ValidVersionPrereleaseBumpValidPrereleaseNoNumber(t *testing.T) {
+func TestDoBumpValidVersionPrereleaseBumpValidPrereleaseNoNumber(t *testing.T) {
 	version := "1.2.3-alpha"
 	bumpType := PrereleaseBump
 	expected := "1.2.3-alpha.0"
@@ -336,7 +336,7 @@ func TestDoBump_ValidVersionPrereleaseBumpValidPrereleaseNoNumber(t *testing.T) 
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_ValidVersionPrereleaseBumpValidPrereleaseNoDot(t *testing.T) {
+func TestDoBumpValidVersionPrereleaseBumpValidPrereleaseNoDot(t *testing.T) {
 	version := "1.2.3-alpha0"
 	bumpType := PrereleaseBump
 	expected := "1.2.3-alpha.1"
@@ -345,7 +345,7 @@ func TestDoBump_ValidVersionPrereleaseBumpValidPrereleaseNoDot(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_ValidVersionPrereleaseBumpValidPrereleaseMultipleDots(t *testing.T) {
+func TestDoBumpValidVersionPrereleaseBumpValidPrereleaseMultipleDots(t *testing.T) {
 	version := "1.2.3-alpha.0.9"
 	bumpType := PrereleaseBump
 	expected := "1.2.3-alpha.0.10"
@@ -354,14 +354,14 @@ func TestDoBump_ValidVersionPrereleaseBumpValidPrereleaseMultipleDots(t *testing
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_InvalidVersion(t *testing.T) {
+func TestDoBumpInvalidVersion(t *testing.T) {
 	version := "1.x.3-alpha"
 	bumpType := MajorBump
 	_, err := doBump(version, bumpType)
 	assert.Error(t, err)
 }
 
-func TestDoBump_PrereleaseClearsBuild(t *testing.T) {
+func TestDoBumpPrereleaseClearsBuild(t *testing.T) {
 	version := "1.2.3-alpha.0+build"
 	bumpType := PrereleaseBump
 	expected := "1.2.3-alpha.1"
@@ -369,7 +369,7 @@ func TestDoBump_PrereleaseClearsBuild(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result.String())
 }
-func TestDoBump_PatchClearsPrerelease(t *testing.T) {
+func TestDoBumpPatchClearsPrerelease(t *testing.T) {
 	viper.Reset()
 	version := "1.2.3-alpha.0"
 	bumpType := PatchBump
@@ -378,7 +378,7 @@ func TestDoBump_PatchClearsPrerelease(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result.String())
 }
-func TestDoBump_MinorClearsPrerelease(t *testing.T) {
+func TestDoBumpMinorClearsPrerelease(t *testing.T) {
 	version := "1.2.3-alpha.0"
 	bumpType := MinorBump
 	expected := "1.3.0"
@@ -387,7 +387,7 @@ func TestDoBump_MinorClearsPrerelease(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_MajorClearsPrerelease(t *testing.T) {
+func TestDoBumpMajorClearsPrerelease(t *testing.T) {
 	version := "1.2.3-alpha.0"
 	bumpType := MajorBump
 	expected := "2.0.0"
@@ -396,7 +396,7 @@ func TestDoBump_MajorClearsPrerelease(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func TestDoBump_AddsCorrectPrereleasePrefix(t *testing.T) {
+func TestDoBumpAddsCorrectPrereleasePrefix(t *testing.T) {
 	viper.Reset()
 	viper.Set("prerelease-prefix", "snapshot")
 	version := "1.2.3"
@@ -407,7 +407,7 @@ func TestDoBump_AddsCorrectPrereleasePrefix(t *testing.T) {
 	assert.Equal(t, expected, result.String())
 }
 
-func Test_FilterPrereleases_NoPrerelease(t *testing.T) {
+func TestFilterPrereleasesNoPrerelease(t *testing.T) {
 	entries := []*semver.Version{
 		semver.MustParse("1.0.0"),
 		semver.MustParse("1.0.1"),
@@ -421,7 +421,7 @@ func Test_FilterPrereleases_NoPrerelease(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func Test_FilterPrereleases_WithPrerelease(t *testing.T) {
+func TestFilterPrereleasesWithPrerelease(t *testing.T) {
 	entries := []*semver.Version{
 		semver.MustParse("1.0.0"),
 		semver.MustParse("1.0.1-alpha"),
@@ -435,7 +435,7 @@ func Test_FilterPrereleases_WithPrerelease(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func Test_FilterPrereleases_Empty(t *testing.T) {
+func TestFilterPrereleasesEmpty(t *testing.T) {
 	entries := []*semver.Version{}
 	expected := []*semver.Version{}
 
@@ -443,7 +443,7 @@ func Test_FilterPrereleases_Empty(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func Test_FilterPrereleases_AllPrerelease(t *testing.T) {
+func TestFilterPrereleasesAllPrerelease(t *testing.T) {
 	entries := []*semver.Version{
 		semver.MustParse("1.0.0-alpha"),
 		semver.MustParse("1.0.1-beta"),
@@ -454,7 +454,7 @@ func Test_FilterPrereleases_AllPrerelease(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-func Test_VersionsToStrings(t *testing.T) {
+func TestVersionsToStrings(t *testing.T) {
 	entries := []*semver.Version{
 		semver.MustParse("1.0.0"),
 		semver.MustParse("1.0.1"),

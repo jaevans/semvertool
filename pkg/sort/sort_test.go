@@ -9,7 +9,7 @@ import (
 )
 
 // Returns the correct bump type when given a commit message containing a bump tag with a valid bump type.
-func TestSort_Simple(t *testing.T) {
+func TestSortSimple(t *testing.T) {
 	entries := semver.Collection{
 		semver.MustParse("1.0.0"),
 		semver.MustParse("2.0.0"),
@@ -27,7 +27,7 @@ func TestSort_Simple(t *testing.T) {
 	assert.Equal(t, expected, entries)
 }
 
-func TestSort_Descending(t *testing.T) {
+func TestSortDescending(t *testing.T) {
 	entries := semver.Collection{
 		semver.MustParse("1.0.0"),
 		semver.MustParse("2.0.0"),

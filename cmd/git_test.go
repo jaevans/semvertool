@@ -131,7 +131,7 @@ func TestInvalidVersionAndRepository(t *testing.T) {
 	assert.Equal(t, expected, resultStrings)
 }
 
-func TestGitBump_NoTags(t *testing.T) {
+func TestGitBumpNoTags(t *testing.T) {
 	repo, err := setupRepo()
 	assert.NoError(t, err)
 
@@ -140,7 +140,7 @@ func TestGitBump_NoTags(t *testing.T) {
 	assert.ErrorIs(t, err, ErrNoSemverTags)
 }
 
-func TestGitBump_OneTag(t *testing.T) {
+func TestGitBumpOneTag(t *testing.T) {
 	repo, err := setupRepo()
 	assert.NoError(t, err)
 
@@ -156,7 +156,7 @@ func TestGitBump_OneTag(t *testing.T) {
 	assert.Equal(t, expected, result.Original())
 }
 
-func TestGitBump_MultipleTags(t *testing.T) {
+func TestGitBumpMultipleTags(t *testing.T) {
 	repo, err := setupRepo()
 	assert.NoError(t, err)
 
@@ -178,7 +178,7 @@ func TestGitBump_MultipleTags(t *testing.T) {
 	assert.Equal(t, expected, result.Original())
 }
 
-func TestGitBump_WithHash(t *testing.T) {
+func TestGitBumpWithHash(t *testing.T) {
 	repo, err := setupRepo()
 	assert.NoError(t, err)
 
@@ -198,7 +198,7 @@ func TestGitBump_WithHash(t *testing.T) {
 	assert.Equal(t, expected, result.Original())
 }
 
-func TestGitBump_WithPrereleasePrefix(t *testing.T) {
+func TestGitBumpWithPrereleasePrefix(t *testing.T) {
 	repo, err := setupRepo()
 	assert.NoError(t, err)
 
