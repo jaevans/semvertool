@@ -131,6 +131,39 @@ func TestInvalidVersionAndRepository(t *testing.T) {
 	assert.Equal(t, expected, resultStrings)
 }
 
+func TestGetTagsStringsValidVersions(t *testing.T) {
+	repo, err := setupRepo()
+	assert.NoError(t, err)
+
+	commit, err := commitFile("file1.txt", repo)
+	assert.NoError(t, err)
+
+	_, err = repo.CreateTag("v1.0.0", commit, nil)
+	assert.NoError(t, err)
+
+	commit, err = commitFile("file2.txt", repo)
+	assert.NoError(t, err)
+
+	_, err = repo.CreateTag("1.0.1", commit, nil)
+	assert.NoError(t, err)
+
+	expected := []string{"v1.0.0", "1.0.1"}
+	resultStrings, err := getTagsStrings(repo)
+
+	assert.NoError(t, err)
+	assert.Equal(t, expected, resultStrings)
+}
+
+func TestGetTagsStringsNoTags(t *testing.T) {
+	repo, err := setupRepo()
+	assert.NoError(t, err)
+
+	expected := []string{}
+	resultStrings, err := getTagsStrings(repo)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, resultStrings)
+}
+
 func TestGitBumpNoTags(t *testing.T) {
 	repo, err := setupRepo()
 	assert.NoError(t, err)

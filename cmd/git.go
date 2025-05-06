@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/spf13/cobra"
@@ -56,14 +57,32 @@ var gitCmd = &cobra.Command{
 	Run: runGit,
 }
 
-func init() {
-	rootCmd.AddCommand(gitCmd)
+var deprecatedGitCmd = &cobra.Command{
+	Use:   "git",
+	Short: "DEPRECATED: " + gitCmd.Short,
+	Long: `
+	DEPRECATED: Use 'bump git' instead. This command will be removed in a future version
+	
+	Bump a semver version to the next major, minor, patch, or prerelease version.
+	
+	See 'bump git' for more information.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Fprintf(os.Stderr, "DEPRECATED: Use 'bump git' instead. This command will be removed in a future version\n")
+		runGit(cmd, args)
+	},
+}
 
+func init() {
 	cf := getCommonBumpFlags()
 	gitCmd.Flags().AddFlagSet(cf)
 	gitCmd.Flags().BoolP("hash", "s", false, "Append the short hash (sha) to the version as metadata information.")
 	gitCmd.Flags().BoolP("from-commit", "c", false, "Extract the bump type from a commit message")
 	gitCmd.MarkFlagsMutuallyExclusive("major", "minor", "patch", "prerelease", "from-message", "from-commit")
+
+	deprecatedGitCmd.Flags().AddFlagSet(cf)
+	deprecatedGitCmd.Flags().BoolP("hash", "s", false, "Append the short hash (sha) to the version as metadata information.")
+	deprecatedGitCmd.Flags().BoolP("from-commit", "c", false, "Extract the bump type from a commit message")
+	deprecatedGitCmd.MarkFlagsMutuallyExclusive("major", "minor", "patch", "prerelease", "from-message", "from-commit")
 
 }
 
