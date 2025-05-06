@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/spf13/cobra"
@@ -58,18 +57,11 @@ var gitCmd = &cobra.Command{
 }
 
 var deprecatedGitCmd = &cobra.Command{
-	Use:   "git",
-	Short: "DEPRECATED: " + gitCmd.Short,
-	Long: `
-	DEPRECATED: Use 'bump git' instead. This command will be removed in a future version
-	
-	Bump a semver version to the next major, minor, patch, or prerelease version.
-	
-	See 'bump git' for more information.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stderr, "DEPRECATED: Use 'bump git' instead. This command will be removed in a future version\n")
-		runGit(cmd, args)
-	},
+	Use:        gitCmd.Use,
+	Short:      gitCmd.Short,
+	Long:       gitCmd.Long,
+	Run:        gitCmd.Run,
+	Deprecated: "and will be removed in a future release. Use 'bump git' instead",
 }
 
 func init() {
