@@ -22,10 +22,9 @@ that can be used in conditionals.`,
 }
 
 // CompareVersions compares two semantic versions and returns:
-//  0 if v1 < v2
-//  1 if v1 = v2
-//  2 if v1 > v2
-//
+// 0 if versions are equal
+// 11 if v1 is greater than v2 (v1 is newer)
+// 12 if v2 is greater than v1 (v2 is newer)
 // Returns an error if either version is invalid
 func CompareVersions(v1string, v2string string) (int, error) {
 	v1, err := semver.NewVersion(v1string)
@@ -39,11 +38,11 @@ func CompareVersions(v1string, v2string string) (int, error) {
 	}
 
 	if v1.LessThan(v2) {
-		return 0, nil
+		return 12, nil // v2 is newer
 	} else if v1.Equal(v2) {
-		return 1, nil
+		return 0, nil // equal versions
 	} else {
-		return 2, nil
+		return 11, nil // v1 is newer
 	}
 }
 
@@ -65,17 +64,17 @@ var compareCmd = &cobra.Command{
 	Short: "Compare two semantic versions",
 	Long: `Compare two semantic versions and return an exit code based on the comparison:
 	
- 0: version1 < version2
- 1: version1 = version2
- 2: version1 > version2
+ 0: version1 = version2
+ 11: version1 > version2
+ 12: version1 < version2
  
- If there is an error, the command will return 3.`,
+ If there is an error, the command will return 1.`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		result, err := CompareVersions(args[0], args[1])
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
-			os.Exit(3)
+			os.Exit(1)
 		}
 		os.Exit(result)
 	},

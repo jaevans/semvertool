@@ -10,19 +10,19 @@ import (
 func TestCompareVersionsLessThan(t *testing.T) {
 	result, err := CompareVersions("1.0.0", "2.0.0")
 	assert.NoError(t, err)
-	assert.Equal(t, 0, result)
+	assert.Equal(t, 12, result) // v2 is newer
 }
 
 func TestCompareVersionsEqual(t *testing.T) {
 	result, err := CompareVersions("1.0.0", "1.0.0")
 	assert.NoError(t, err)
-	assert.Equal(t, 1, result)
+	assert.Equal(t, 0, result) // equal versions
 }
 
 func TestCompareVersionsGreaterThan(t *testing.T) {
 	result, err := CompareVersions("2.0.0", "1.0.0")
 	assert.NoError(t, err)
-	assert.Equal(t, 2, result)
+	assert.Equal(t, 11, result) // v1 is newer
 }
 
 func TestCompareVersionsFirstInvalid(t *testing.T) {
@@ -38,13 +38,13 @@ func TestCompareVersionsSecondInvalid(t *testing.T) {
 func TestCompareVersionsPatchVersions(t *testing.T) {
 	result, err := CompareVersions("1.0.1", "1.0.2")
 	assert.NoError(t, err)
-	assert.Equal(t, 0, result)
+	assert.Equal(t, 12, result) // v2 is newer
 }
 
 func TestCompareVersionsPrereleaseVsRelease(t *testing.T) {
 	result, err := CompareVersions("1.0.0-alpha", "1.0.0")
 	assert.NoError(t, err)
-	assert.Equal(t, 0, result)
+	assert.Equal(t, 12, result) // v2 is newer
 }
 
 // Tests for IsReleased function
