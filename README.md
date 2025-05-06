@@ -54,31 +54,86 @@ semvertool bump --build $(git rev-parse --short HEAD) 1.1.1-alpha.1
 semvertool bump 1.1.1-alpha.2+3f6d1270
 ```
 
-### git
+### bump git
 
 Bump a version based on the latest semver tag in the git repository.
 
 ```shell
 Examples:
 git tag v0.1.0
-semvertool git
+semvertool bump git
 v0.1.1
 
 git tag v1.0.0
-semvertool git --minor
+semvertool bump git --minor
 v1.1.0
 
 git tag v1.0.0-alpha.0
-semvertool git --prerelease
+semvertool bump git --prerelease
 v1.0.0-alpha.1
 
 git tag v1.0.0-alpha.1
-semvertool git --prerelease --hash
+semvertool bump git --prerelease --hash
 v1.0.0-alpha.2+3f6d1270
 
 git tag v1.0.0-alpha.2+3f6d1270
-semvertool git --minor
+semvertool bump git --minor
 v1.1.0
+```
+
+### script
+
+Provides utilities for scripting with semantic versions. These commands are designed to be used in shell scripts, returning exit codes that can be used in conditionals.
+
+#### script compare
+
+Compare two semantic versions and return an exit code based on the comparison.
+
+```shell
+semvertool script compare <version1> <version2>
+```
+
+Exit codes:
+- **0**: When versions are equal
+- **11**: When version1 is greater than version2 (version1 is newer)
+- **12**: When version1 is less than version2 (version2 is newer)
+
+Examples:
+
+```shell
+semvertool script compare 1.0.0 1.0.0
+echo $? # Returns 0 (equal)
+
+semvertool script compare 2.0.0 1.0.0
+echo $? # Returns 11 (first version is newer)
+
+semvertool script compare 1.0.0 1.1.0
+echo $? # Returns 12 (second version is newer)
+```
+
+#### script released
+
+Check if a version is a release version (not a prerelease and has no metadata).
+
+```shell
+semvertool script released <version>
+```
+
+Exit codes:
+- **0**: If the version is a release version (X.Y.Z only)
+- **1**: If the version is a prerelease or has metadata
+
+Examples:
+
+```shell
+semvertool script released 1.0.0
+echo $? # Returns 0 (it's a release version)
+
+semvertool script released 1.0.0-alpha.1
+echo $? # Returns 1 (it's a prerelease)
+
+semvertool script released 1.0.0+build.123
+echo $? # Returns 1 (it has metadata)
 ```
 
 ### `sort`
