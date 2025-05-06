@@ -13,3 +13,5 @@ tmp/
 dist/
 
 semvertool
+
+coverprofile.out
