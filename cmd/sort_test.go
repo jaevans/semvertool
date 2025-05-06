@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSort_RunSortSimple(t *testing.T) {
+func TestSortRunSortSimple(t *testing.T) {
 	args := []string{"1.0.0", "2.0.0", "1.0.1"}
 	expected := "1.0.0 1.0.1 2.0.0"
 
@@ -34,7 +34,7 @@ func TestSort_RunSortSimple(t *testing.T) {
 	assert.Equal(t, expected, strings.TrimSuffix(buf.String(), "\n"))
 }
 
-func TestSort_RunSortDescending(t *testing.T) {
+func TestSortRunSortDescending(t *testing.T) {
 	args := []string{"1.0.0", "2.0.0", "1.0.1"}
 	expected := "2.0.0 1.0.1 1.0.0"
 
@@ -61,7 +61,7 @@ func TestSort_RunSortDescending(t *testing.T) {
 	assert.Equal(t, expected, strings.TrimSuffix(buf.String(), "\n"))
 }
 
-func TestSort_RunSortNoPrerelease(t *testing.T) {
+func TestSortRunSortNoPrerelease(t *testing.T) {
 	args := []string{"1.0.0", "2.0.0", "1.0.1-alpha.1"}
 	expected := "1.0.0 2.0.0"
 
@@ -88,7 +88,7 @@ func TestSort_RunSortNoPrerelease(t *testing.T) {
 	assert.Equal(t, expected, strings.TrimSuffix(buf.String(), "\n"))
 }
 
-// func TestSort_RunSortInvalidTag(t *testing.T) {
+// func TestSortRunSortInvalidTag(t *testing.T) {
 // 	args := []string{"1.0.0", "2.0.0", "1.0.1-alpha.1", "invalid-tag"}
 // 	expected := "invalid semver version: invalid-tag"
 

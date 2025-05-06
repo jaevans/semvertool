@@ -56,14 +56,25 @@ var gitCmd = &cobra.Command{
 	Run: runGit,
 }
 
-func init() {
-	rootCmd.AddCommand(gitCmd)
+var deprecatedGitCmd = &cobra.Command{
+	Use:        gitCmd.Use,
+	Short:      gitCmd.Short,
+	Long:       gitCmd.Long,
+	Run:        gitCmd.Run,
+	Deprecated: "and will be removed in a future release. Use 'bump git' instead",
+}
 
+func init() {
 	cf := getCommonBumpFlags()
 	gitCmd.Flags().AddFlagSet(cf)
 	gitCmd.Flags().BoolP("hash", "s", false, "Append the short hash (sha) to the version as metadata information.")
 	gitCmd.Flags().BoolP("from-commit", "c", false, "Extract the bump type from a commit message")
 	gitCmd.MarkFlagsMutuallyExclusive("major", "minor", "patch", "prerelease", "from-message", "from-commit")
+
+	deprecatedGitCmd.Flags().AddFlagSet(cf)
+	deprecatedGitCmd.Flags().BoolP("hash", "s", false, "Append the short hash (sha) to the version as metadata information.")
+	deprecatedGitCmd.Flags().BoolP("from-commit", "c", false, "Extract the bump type from a commit message")
+	deprecatedGitCmd.MarkFlagsMutuallyExclusive("major", "minor", "patch", "prerelease", "from-message", "from-commit")
 
 }
 

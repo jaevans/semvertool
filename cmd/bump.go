@@ -46,7 +46,7 @@ var bumpCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(bumpCmd)
+	bumpCmd.AddCommand(gitCmd)
 
 	cf := getCommonBumpFlags()
 	bumpCmd.Flags().AddFlagSet(cf)

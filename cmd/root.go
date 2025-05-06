@@ -38,4 +38,9 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
+	rootCmd.AddCommand(deprecatedGitCmd)
+	rootCmd.AddCommand(bumpCmd)
+
+	// Add the sort subcommand to the root command
+	rootCmd.AddCommand(SortCmd)
 }
