@@ -43,4 +43,6 @@ func init() {
 
 	// Add the sort subcommand to the root command
 	rootCmd.AddCommand(SortCmd)
+
+	rootCmd.AddCommand(scriptCmd)
 }
