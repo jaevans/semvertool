@@ -22,10 +22,9 @@ that can be used in conditionals.`,
 }
 
 // CompareVersions compares two semantic versions and returns:
-// -1 if v1 < v2
-//
-//	0 if v1 = v2
-//	1 if v1 > v2
+//  0 if v1 < v2
+//  1 if v1 = v2
+//  2 if v1 > v2
 //
 // Returns an error if either version is invalid
 func CompareVersions(v1string, v2string string) (int, error) {
