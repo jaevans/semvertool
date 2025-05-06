@@ -63,12 +63,8 @@ func RunSort(cmd *cobra.Command, args []string) error {
 		versions = filtered
 	}
 
-	ascending := true
-	// Sort versions
-	if order == "descending" || order == "dsc" {
-		// Sort in descending order
-		ascending = false
-	}
+	ascending := order == "ascending" || order == "asc"
+
 	sort.SortVersions(semver.Collection(versions), ascending)
 
 	result := VersionsToStrings(versions)
