@@ -94,6 +94,7 @@ semvertool script compare <version1> <version2>
 ```
 
 Exit codes:
+
 - **0**: When versions are equal
 - **11**: When version1 is greater than version2 (version1 is newer)
 - **12**: When version1 is less than version2 (version2 is newer)
@@ -120,6 +121,7 @@ semvertool script released <version>
 ```
 
 Exit codes:
+
 - **0**: If the version is a release version (X.Y.Z only)
 - **1**: If the version is a prerelease or has metadata
 
@@ -160,4 +162,51 @@ semvertool sort  1.0.0 1.0.0-alpha.1 1.0.0-alpha.2
 
 semvertool sort --no-prerelease 1.0.0 1.0.1-alpha.1 2.0.0 1.0.1 1.0.1-beta.1
 1.0.0 1.0.1 2.0.0
+```
+
+### previous
+
+Get the previous semver tag from git history. This is useful for determining what version preceded the current one.
+
+```shell
+semvertool previous
+```
+
+The command works in two modes:
+
+1. If the current commit has a semver tag, it will return the tag that came before it
+2. If the current commit is not tagged, it will return the previous tag in the history
+
+The command also provides a `--released` flag that filters out prerelease versions:
+
+```shell
+semvertool previous --released
+```
+
+Examples:
+
+For a repository with tags `v1.0.0`, `v1.1.0`, `v1.2.0-alpha.1`, `v1.2.0`:
+
+```shell
+# When HEAD is at v1.2.0
+semvertool previous
+v1.2.0-alpha.1
+
+# Same scenario, but only looking at released versions
+semvertool previous --released
+v1.1.0
+
+# When HEAD is at an untagged commit after v1.2.0
+semvertool previous
+v1.2.0
+
+# When there's only one tag in the repository
+semvertool previous
+Error: no previous tag available - already at oldest tag
+
+# Get the previous tag from a different repository
+semvertool previous -r /path/to/other/git/repo
+
+# Short form of the repository flag
+semvertool previous --repository=/path/to/other/git/repo
 ```
