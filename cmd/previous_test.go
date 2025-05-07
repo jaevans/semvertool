@@ -72,9 +72,13 @@ func TestGetPreviousTagFromPrerelease(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Checkout the prerelease tag to make it the HEAD
+	tagRef, err := repo.Tag("v1.2.0-alpha.1")
+	assert.NoError(t, err)
+	tagCommit, err := repo.ResolveRevision(plumbing.Revision(tagRef.Name().String()))
+	assert.NoError(t, err)
+
 	err = w.Checkout(&git.CheckoutOptions{
-		Hash:   plumbing.NewHash(""),
-		Branch: plumbing.ReferenceName("refs/tags/v1.2.0-alpha.1"),
+		Hash:   *tagCommit,
 	})
 	assert.NoError(t, err)
 
