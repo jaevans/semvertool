@@ -25,6 +25,8 @@ builds:
       - arm64
     goamd64:
       - v1
+    ldflags:
+      - -s -w -X github.com/jaevans/semvertool/cmd.version={{.Version}} -X github.com/jaevans/semvertool/cmd.commit={{.Commit}} -X github.com/jaevans/semvertool/cmd.date={{.Date}}
 
 archives:
   - format: binary
